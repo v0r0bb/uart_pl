@@ -38,9 +38,10 @@ module fifo_generic #(
         end
     end
 
-    always_ff @ (posedge clk_i)
+    always_ff @ (posedge clk_i) begin
         if (push)
             data[wr_ptr] <= wr_data;
+    end
 
     assign rd_data = data[rd_ptr];
 

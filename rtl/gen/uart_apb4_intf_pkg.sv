@@ -8,7 +8,8 @@ package uart_apb4_intf_pkg;
     localparam UART_APB4_INTF_SIZE = 'h14;
 
     typedef struct packed {
-        logic [19:0] _reserved_31_12;
+        logic [18:0] _reserved_31_13;
+        logic ORE;
         logic [4:0] TXFSPACE;
         logic [4:0] RXFLEVEL;
         logic TXFNF;

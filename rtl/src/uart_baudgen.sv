@@ -1,12 +1,12 @@
-import uart_apb4_intf_pkg::*;
-
-module uart_baudgen (
+module uart_baudgen
+    import uart_pl_pkg::*;
+(
     input clk_i,
     input rst_n,
 
-    input uart_apb4_intf__out_t hwif_out,
+    input baudgen_cfg_t cfg_i,
 
-    output uart_clk_o
+    output uart_strb_o
 );
 
     logic [3:0]  div_frac;
@@ -18,24 +18,20 @@ module uart_baudgen (
     logic [3:0]  acc;       
     logic        acc_overflow;
 
-    assign over8    = hwif_out.UART_CR.OVER8.value;
-    assign div_frac = hwif_out.UART_BRR.DIV_FRAC.value;
-    assign div_mant = hwif_out.UART_BRR.DIV_MANT.value;
-
     always_ff @(posedge clk_i or negedge rst_n) begin
         if (~rst_n) begin 
             acc <= 4'd0;
             acc_overflow <= 1'b0;
         end
-        else if (uart_clk_o) begin
-            if (over8) 
-                {acc_overflow, acc[2:0]} <= acc[2:0] + div_frac[2:0];
+        else if (uart_strb_o) begin
+            if (cfg_i.over8) 
+                {acc_overflow, acc[2:0]} <= acc[2:0] + cfg_i.div_frac[2:0];
             else   
-                {acc_overflow, acc} <= acc + div_frac;
+                {acc_overflow, acc} <= acc + cfg_i.div_frac;
         end
     end
 
-    assign current_mant = div_mant + (acc_overflow ? 1'b1 : 1'b0);
+    assign current_mant = cfg_i.div_mant + (acc_overflow ? 1'b1 : 1'b0);
 
     always_ff @(posedge clk_i or negedge rst_n) begin
         if (~rst_n)
@@ -46,6 +42,6 @@ module uart_baudgen (
             cnt <= cnt + 1'b1;
     end
 
-    assign uart_clk_o = (cnt == current_mant - 1);
+    assign uart_strb_o = (cnt == current_mant - 1);
 
 endmodule
