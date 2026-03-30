@@ -77,4 +77,16 @@ package uart_pl_pkg;
         logic ore;
     } rx_hwif_in_t;
 
+
+    localparam ADDR_WIDTH = 5;
+    localparam DATA_WIDTH = 32;
+
+    typedef enum bit [ADDR_WIDTH - 1:0] {
+        UART_SR_ADDR  = 'h0,
+        UART_CR_ADDR  = 'h4,
+        UART_RX_ADDR  = 'h8,
+        UART_TX_ADDR  = 'hC,
+        UART_BRR_ADDR = 'h10
+    } uart_reg_t;
+
 endpackage

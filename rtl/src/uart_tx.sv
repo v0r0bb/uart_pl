@@ -36,11 +36,16 @@ module uart_tx
         if (~rst_n)
             smpl_cnt <= '0;
         else begin 
-            if (uart_strb_i)
-                if ((state == START & tx_o) | (is_last & state != STOP))
+            if (uart_strb_i) begin 
+                if (state == IDLE)
                     smpl_cnt <= '0;
-                else 
+                else if (state == START & tx_o == 1'b1)
+                    smpl_cnt <= '0;
+                else if ((is_last & state != STOP) | (is_stop & state == STOP))
+                    smpl_cnt <= '0;
+                else  
                     smpl_cnt <= smpl_cnt + 1'b1;
+            end
         end
     end
 

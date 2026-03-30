@@ -1,0 +1,101 @@
+addrmap uart_apb4_intf {
+    external reg {
+        name = "UART Status Register";
+        default sw = r;
+        default hw = rw;
+        field { 
+            name = "Receive data FIFO not empty";
+            desc = "Set by hw when rx_fifo is not empty.
+                    UART_RX can be read";
+            reset = 1'b0;
+        } RXFNE[0:0];
+        field {
+            name = "Transmit data FIFO not full";
+            desc = "Set by hw when tx_fifo is not full. 
+                    UART_TX can be written";
+            reset = 1'b1;
+        } TXFNF[1:1];
+        field {
+            name = "Receive data FIFO fill level";
+            desc = "0: rx_fifo is empty;
+                    1-15: bytes that are available for reading;
+                    16: rx_fifo is full";
+            reset = 5'd0;
+        } RXFLEVEL[6:2];
+        field {
+            name = "Transmit data FIFO free space";
+            desc = "0: tx_fifo is full;
+                    1-15: number of available slots for writing;
+                    16: tx_fifo is empty";
+            reset = 5'd16;
+        } TXFSPACE[11:7];
+        field {
+            name = "Overrun error";
+            desc = "Set by hw when a new byte is received while the rx_fifo 
+                    is full and cannot accept it. This flag is 
+                    cleared automatically after the current data is 
+                    successfully read from the rx_fifo";
+            reset = 1'b0;
+        } ORE[12:12];
+    } UART_SR @ 0x00;
+
+    reg {
+        name = "UART Control Register";
+        default sw = rw;
+        default hw = r;
+        field {
+            name = "STOP bits";
+            desc = "0: 1 stop bit;
+                    1: 2 stop bits";
+            reset  = 1'b0;
+        } SB[0:0];
+        field {
+            name = "Oversampling mode";
+            desc = "0: oversampling by 16;
+                    1: oversampling by 8";
+            reset = 1'b0;
+        } OVER8[1:1];
+    } UART_CR @ 0x04;
+
+    external reg {
+        name = "UART Recieve Data Register";
+        field {
+            name = "Data value";
+            desc = "Contains the received data
+                    character when the register is read";
+            sw = r;
+            hw = w;
+            //swacc = true; 
+            reset = 8'd0;
+        } RX_DATA[7:0];
+    } UART_RX @ 0x08;
+
+    external reg {
+        name = "UART Transmit Data Register";
+        field {
+            name = "Data value";
+            desc = "Contains the data character to be
+            transmitted when the register is written to";
+            sw = w;
+            hw = r;
+            //swmod = true; 
+            reset = 8'd0;
+        } TX_DATA[7:0];
+    } UART_TX @ 0x0C;
+
+    reg {
+        name = "UART Baud Rate Register";
+        default sw = wr;
+        default hw = r;
+        field {
+            name = "Fraction of UART Divider";
+            desc = "These 4 bits define the fraction of the UART Divider";
+            reset = 4'd0;
+        } DIV_FRAC[3:0];
+        field {
+            name = "Mantissa of UART Divider";
+            desc = "These 12 bits define the mantissa of the UART Divider";
+            reset = 12'd0;
+        } DIV_MANT[15:4];
+    } UART_BRR @ 0x10;
+};
