@@ -1,10 +1,10 @@
 module fifo_generic #(
-    parameter WIDTH = 8,
-    parameter DEPTH = 16,
+    parameter WIDTH      = 8,
+    parameter DEPTH      = 16,
     localparam cnt_width = $clog2(DEPTH + 1)
 ) (
     input clk_i,
-    input rst,
+    input rst_n,
 
     input push,
     input pop,
@@ -25,12 +25,13 @@ module fifo_generic #(
     logic [ptr_width - 1:0] wr_ptr, rd_ptr;
     logic [WIDTH - 1:0] data [0:DEPTH - 1];
 
-    always_ff @ (posedge clk_i or posedge rst) begin
-        if (rst) begin
+    always_ff @ (posedge clk_i or negedge rst_n) begin
+        if (~rst_n) begin
             wr_ptr <= '0;
             rd_ptr <= '0;
         end
-        else begin
+        else 
+        begin
             if (push)
                 wr_ptr <= (wr_ptr == max_ptr) ? '0 : wr_ptr + 1'b1;
             if (pop)
@@ -45,8 +46,8 @@ module fifo_generic #(
 
     assign rd_data = data[rd_ptr];
 
-    always_ff @ (posedge clk_i or posedge rst) begin
-        if (rst)
+    always_ff @ (posedge clk_i or negedge rst_n) begin
+        if (~rst_n)
             cnt <= '0;
         else if (push & ~pop)
             cnt <= cnt + 1'b1;

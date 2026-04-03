@@ -59,16 +59,16 @@ class scoreboard;
     virtual function void check_status(logic [31:0] real_sr);
         logic                              real_rxfne    = real_sr[0];
         logic                              real_txfnf    = real_sr[1];
-        logic [FIFO_DEPTH_CNT_WIDTH - 1:0] real_rxflevel = real_sr[6:2];
-        logic [FIFO_DEPTH_CNT_WIDTH - 1:0] real_txfspace = real_sr[11:7];
+        logic [FIFO_CNT_WIDTH - 1:0] real_rxflevel = real_sr[6:2];
+        logic [FIFO_CNT_WIDTH - 1:0] real_txfspace = real_sr[11:7];
         logic                              real_ore      = real_sr[12];
 
         logic                              ref_rxfne    = uart_vif.rxfne;
         logic                              ref_txfnf    = uart_vif.txfnf;
-        logic [FIFO_DEPTH_CNT_WIDTH - 1:0] ref_rxflevel = uart_vif.rxflevel;
-        logic [FIFO_DEPTH_CNT_WIDTH - 1:0] ref_txfspace = uart_vif.txfspace;
+        logic [FIFO_CNT_WIDTH - 1:0] ref_rxflevel = uart_vif.rxflevel;
+        logic [FIFO_CNT_WIDTH - 1:0] ref_txfspace = uart_vif.txfspace;
 
-        $display("[SCB] SR read (%0d/%0d)", ++processed_pkt,
+        $display("[SCB] SR read %0b (%0d/%0d)", real_sr, ++processed_pkt,
             cfg.uart_pkt_amount);
         if (real_rxfne !== ref_rxfne) begin  
             $error("[SCB] RXFNE   mismatch! Real: %b,  Ref: %b",

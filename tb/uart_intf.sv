@@ -6,7 +6,7 @@ interface uart_intf;
 
     logic                              rxfne;   
     logic                              txfnf;   
-    logic [FIFO_DEPTH_CNT_WIDTH - 1:0] rxflevel; 
-    logic [FIFO_DEPTH_CNT_WIDTH - 1:0] txfspace;
+    logic [FIFO_CNT_WIDTH - 1:0] rxflevel; 
+    logic [FIFO_CNT_WIDTH - 1:0] txfspace;
     logic                              ore;
 endinterface

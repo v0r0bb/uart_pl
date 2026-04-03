@@ -3,7 +3,7 @@ class apb4_gen_base;
     test_cfg_base cfg;
     mailbox#(apb4_trans) apb4_gen2drv;
 
-    virtual task run();
+    task setup();
         apb4_trans tr = new();
         tr.paddr = UART_CR_ADDR;
         tr.pdata = cfg.over8 << 1 | cfg.stop_bits;
@@ -14,6 +14,11 @@ class apb4_gen_base;
         tr.pdata = cfg.div_mant << 4 | cfg.div_frac;
         tr.pwrite = 1'b1;
         apb4_gen2drv.put(tr); 
+    endtask
+
+    virtual task run();
+        apb4_trans tr;
+        setup();
         repeat (cfg.uart_pkt_amount) begin 
             tr = new();
             if (!tr.randomize()) begin 
@@ -28,23 +33,13 @@ endclass
 
 class apb4_gen_fifo extends apb4_gen_base;
     virtual task run();
-        apb4_trans tr = new();
-        tr.paddr = UART_CR_ADDR;
-        tr.pdata = cfg.over8 << 1 | cfg.stop_bits;
-        tr.pwrite = 1'b1;
-        apb4_gen2drv.put(tr); 
-        tr = new();
-        tr.paddr = UART_BRR_ADDR;
-        tr.pdata = cfg.div_mant << 4 | cfg.div_frac;
-        tr.pwrite = 1'b1;
-        apb4_gen2drv.put(tr); 
-
+        apb4_trans tr;
+        setup();
         repeat (cfg.uart_pkt_amount / 2) begin 
             tr = new();
             tr.paddr = UART_TX_ADDR;
             tr.pwrite = 1'b1;
             tr.pdata = $urandom_range(0, 255);
-            // tr.display("[APB4 GEN]");
             apb4_gen2drv.put(tr); 
         end
 
@@ -55,9 +50,14 @@ class apb4_gen_fifo extends apb4_gen_base;
             tr.paddr = UART_RX_ADDR;
             tr.pwrite = 1'b0;
             tr.pdata = 32'h0;
-            // tr.display("[APB4 GEN]");
             apb4_gen2drv.put(tr);
         end
+    endtask
+endclass
+
+class apb4_gen_ore extends apb4_gen_base;
+    virtual task run();
+        setup();
     endtask
 endclass
 

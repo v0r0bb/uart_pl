@@ -4,9 +4,8 @@ module uart_rx
     input clk_i, 
     input rst_n,
 
-    input  driver_cfg_t  cfg_i,
-    input  rx_hwif_out_t rx_hwif_out_i,
-    output rx_hwif_in_t  rx_hwif_in_o,
+    input  driver_cfg_t cfg_i,
+    rx_hwif_intf.slave  rx_hwif,
 
     input uart_strb_i,
 
@@ -19,11 +18,11 @@ module uart_rx
 
     state_t state, next_state;
 
-    logic [SMPL_CNT_WIDTH - 1:0]      smpl_cnt; 
-    logic [DATA_BITS_CNT_WIDTH - 1:0] bit_cnt;
+    logic [SMPL_CNT_WIDTH - 1:0] smpl_cnt; 
+    logic [DATA_CNT_WIDTH - 1:0] bit_cnt;
 
-    logic [RX_VOTING_SAMPLES -1:0] rx_smpl;
-    logic                          rx_voted;
+    logic [RX_VOTE_SAMPLES -1:0] rx_smpl;
+    logic                        rx_voted;
 
     logic is_smpl;
     logic is_vote;
@@ -132,6 +131,6 @@ module uart_rx
     assign rx_vld_o  = rx_vld_reg;
     assign rx_data_o = rx_reg;
 
-    assign rx_hwif_in_o.ore = ore;
+    assign rx_hwif.ore = ore;
 
 endmodule

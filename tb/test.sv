@@ -14,7 +14,7 @@ class test_base;
     mailbox#(logic [DATA_BITS - 1:0]) uart_mon2scb;
 
     function new(
-        virtual apb4_intf#(.ADDR_WIDTH(5)) apb4_vif,
+        virtual apb4_intf#(.ADDR_WIDTH(ADDR_WIDTH)) apb4_vif,
         virtual sync_intf sync_vif,
         virtual uart_intf uart_vif
     );

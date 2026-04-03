@@ -1,11 +1,12 @@
 module uart_pl_wrapper #(
 	parameter C_S_APB_DATA_WIDTH = 32,
-    parameter C_S_APB_ADDR_WIDTH = 32
+    parameter C_S_APB_ADDR_WIDTH = 32,
+    parameter UART_PL_APB_BASE   = 32'h43C00000
 ) (
     input clk_i,
     input rst_n, 
 
-    input  [C_S_APB_ADDR_WIDTH-1:0]     PADDR,
+    input  [C_S_APB_ADDR_WIDTH - 1:0]   PADDR,
     input                               PSEL,
     input                               PENABLE,
     input                               PWRITE,
@@ -20,19 +21,14 @@ module uart_pl_wrapper #(
     output tx_o
 );
 
-    localparam ADDR_WIDTH = 5;
-    logic is_uart_pl;
+//    logic is_uart_pl;
+//    assign is_uart_pl = (PADDR[C_S_APB_ADDR_WIDTH - 1:ADDR_WIDTH] == (UART_PL_APB_BASE >> ADDR_WIDTH));
 
-    assign is_uart_pl = (PADDR[C_S_APB_ADDR_WIDTH - 1:ADDR_WIDTH] == '0);
-
-    uart_pl_top #(
-        .ADDR_WIDTH (ADDR_WIDTH),
-        .DATA_WIDTH (C_S_APB_DATA_WIDTH)
-    ) i_uart_pl_top (
+    uart_pl_top i_uart_pl_top (
         .clk_i(clk_i),
         .rst_n(rst_n),
-        .paddr(PADDR[ADDR_WIDTH - 1:0]),
-        .psel(PSEL & is_uart_pl),
+        .paddr(PADDR),
+        .psel(PSEL),
         .penable(PENABLE),
         .pwrite(PWRITE),
         .pprot(PPROT),

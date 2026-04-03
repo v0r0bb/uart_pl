@@ -1,6 +1,7 @@
-module uart_pl_top #(
-	parameter ADDR_WIDTH = 5,  
-    parameter DATA_WIDTH = 32
+module uart_pl_top
+#(
+    localparam ADDR_WIDTH = 5,
+    localparam DATA_WIDTH = 32
 ) (
     input clk_i,
     input rst_n, 
@@ -24,7 +25,7 @@ module uart_pl_top #(
     import uart_pl_pkg::*;
 
     uart_apb4_intf__out_t hwif_out;
-    uart_apb4_intf__in_t hwif_in;
+    uart_apb4_intf__in_t  hwif_in;
 
     apb4_intf #(
     	.DATA_WIDTH(DATA_WIDTH),
@@ -49,21 +50,16 @@ module uart_pl_top #(
     logic [DATA_BITS - 1:0] rx_data;
     logic                   rx_rdy;
 
-    logic                  tx_vld;
-    logic [DATA_BITS -1:0] tx_data;
-    logic                  tx_rdy;
+    logic                   tx_vld;
+    logic [DATA_BITS - 1:0] tx_data;
+    logic                   tx_rdy;
 
     baudgen_cfg_t baudgen_cfg;
     driver_cfg_t  driver_cfg;
 
-    fifo_rx_hwif_out_t fifo_rx_hwif_out;
-    fifo_rx_hwif_in_t  fifo_rx_hwif_in;
-
-    fifo_tx_hwif_out_t fifo_tx_hwif_out;
-    fifo_tx_hwif_in_t  fifo_tx_hwif_in;
-
-    rx_hwif_out_t rx_hwif_out;
-    rx_hwif_in_t  rx_hwif_in;
+    fifo_tx_hwif_intf fifo_tx_hwif();
+    fifo_rx_hwif_intf fifo_rx_hwif();
+    rx_hwif_intf      rx_hwif();
 
     uart_apb4_intf i_uart_apb4_intf (
         .clk(clk_i), .rst(~rst_n),
@@ -75,19 +71,15 @@ module uart_pl_top #(
     uart_pl_decode i_uart_pl_decode (
         .hwif_in(hwif_in), .hwif_out(hwif_out),
         .baudgen_cfg_o(baudgen_cfg),
-        .fifo_rx_hwif_out_o(fifo_rx_hwif_out),
-        .fifo_rx_hwif_in_i(fifo_rx_hwif_in),
-        .fifo_tx_hwif_out_o(fifo_tx_hwif_out),
-        .fifo_tx_hwif_in_i(fifo_tx_hwif_in),
-        .rx_hwif_out_o(rx_hwif_out),
-        .rx_hwif_in_i(rx_hwif_in),
-        .driver_cfg_o(driver_cfg)
+        .driver_cfg_o(driver_cfg),
+        .fifo_tx(fifo_tx_hwif.master),
+        .fifo_rx(fifo_rx_hwif.master),
+        .rx(rx_hwif.master)
     );
 
     fifo_tx i_fifo_tx (
         .clk_i(clk_i), .rst_n(rst_n),
-        .fifo_tx_hwif_out_i(fifo_tx_hwif_out),
-        .fifo_tx_hwif_in_o(fifo_tx_hwif_in),
+        .fifo_tx_hwif(fifo_tx_hwif.slave),
         .tx_vld_o(tx_vld),
         .tx_data_o(tx_data),
         .tx_rdy_i(tx_rdy)
@@ -95,8 +87,7 @@ module uart_pl_top #(
 
     fifo_rx i_fifo_rx (
         .clk_i(clk_i), .rst_n(rst_n),
-        .fifo_rx_hwif_out_i(fifo_rx_hwif_out),
-        .fifo_rx_hwif_in_o(fifo_rx_hwif_in),
+        .fifo_rx_hwif(fifo_rx_hwif.slave),
         .rx_vld_i(rx_vld),
         .rx_data_i(rx_data),
         .rx_rdy_o(rx_rdy)
@@ -121,8 +112,7 @@ module uart_pl_top #(
     uart_rx i_uart_rx (
         .clk_i(clk_i), .rst_n(rst_n),
         .cfg_i(driver_cfg),
-        .rx_hwif_out_i(rx_hwif_out),
-        .rx_hwif_in_o(rx_hwif_in),
+        .rx_hwif(rx_hwif.slave),
         .uart_strb_i(uart_strb),
         .rx_vld_o(rx_vld),
         .rx_data_o(rx_data),

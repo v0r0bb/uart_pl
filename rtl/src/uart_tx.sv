@@ -17,8 +17,8 @@ module uart_tx
 
     state_t state, next_state;
 
-    logic [SMPL_CNT_WIDTH - 1:0]      smpl_cnt; 
-    logic [DATA_BITS_CNT_WIDTH - 1:0] bit_cnt;
+    logic [SMPL_CNT_WIDTH - 1:0] smpl_cnt; 
+    logic [DATA_CNT_WIDTH - 1:0] bit_cnt;
 
     logic is_last;
     logic is_stop;
@@ -74,8 +74,12 @@ module uart_tx
                 if (uart_strb_i & is_last & bit_cnt == (DATA_BITS - 1)) 
                     next_state = STOP;
             STOP:
-                if (uart_strb_i & is_stop)  
-                    next_state = IDLE;
+                if (uart_strb_i & is_stop) begin
+                    if (tx_vld_i)
+                        next_state = START;
+                    else 
+                        next_state = IDLE;
+                end
         endcase 
     end
 
@@ -114,7 +118,7 @@ module uart_tx
         end
     end
 
-    assign tx_rdy_o = (state == IDLE);
+    assign tx_rdy_o = (state == IDLE) | (state == STOP & uart_strb_i & is_stop);
     assign tx_o = tx_reg;
 
 endmodule

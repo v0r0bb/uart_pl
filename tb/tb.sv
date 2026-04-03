@@ -11,28 +11,28 @@ module tb;
     sync_intf sync_if(.clk_i(clk_i), .rst_n(rst_n));
     uart_intf uart_if();
 
-    assign uart_if.data     = DUT.i_uart_rx.rx_data_o;
-    assign uart_if.vld      = DUT.i_uart_rx.rx_vld_o;
-    assign uart_if.rdy      = DUT.i_uart_rx.rx_rdy_i;
-    assign uart_if.rxfne    = ~DUT.i_fifo_rx.empty;
-    assign uart_if.txfnf    = ~DUT.i_fifo_tx.full;
-    assign uart_if.rxflevel = DUT.i_fifo_rx.cnt;
-    assign uart_if.txfspace = FIFO_DEPTH_CNT_WIDTH'(FIFO_DEPTH) - DUT.i_fifo_tx.cnt;
+    assign uart_if.data     = DUT.i_uart_pl_top.i_uart_rx.rx_data_o;
+    assign uart_if.vld      = DUT.i_uart_pl_top.i_uart_rx.rx_vld_o;
+    assign uart_if.rdy      = DUT.i_uart_pl_top.i_uart_rx.rx_rdy_i;
+    assign uart_if.rxfne    = ~DUT.i_uart_pl_top.i_fifo_rx.empty;
+    assign uart_if.txfnf    = ~DUT.i_uart_pl_top.i_fifo_tx.full;
+    assign uart_if.rxflevel = DUT.i_uart_pl_top.i_fifo_rx.cnt;
+    assign uart_if.txfspace = FIFO_CNT_WIDTH'(FIFO_DEPTH) - DUT.i_uart_pl_top.i_fifo_tx.cnt;
 
-    uart_pl_top DUT (
+    uart_pl_wrapper DUT (
         .clk_i(clk_i),
         .rst_n(rst_n),
 
-        .paddr(apb4_if.PADDR),
-        .psel(apb4_if.PSEL),
-        .penable(apb4_if.PENABLE),
-        .pwrite(apb4_if.PWRITE),
-        .pwdata(apb4_if.PWDATA),
-        .prdata(apb4_if.PRDATA),
-        .pready(apb4_if.PREADY),
-        .pprot(apb4_if.PPROT),
-        .pstrb(apb4_if.PSTRB),
-        .pslverr(apb4_if.PSLVERR),
+        .PADDR(apb4_if.PADDR),
+        .PSEL(apb4_if.PSEL),
+        .PENABLE(apb4_if.PENABLE),
+        .PWRITE(apb4_if.PWRITE),
+        .PWDATA(apb4_if.PWDATA),
+        .PRDATA(apb4_if.PRDATA),
+        .PREADY(apb4_if.PREADY),
+        .PPROT(apb4_if.PPROT),
+        .PSTRB(apb4_if.PSTRB),
+        .PSLVERR(apb4_if.PSLVERR),
 
         .tx_o(tx_o),
         .rx_i(rx_i)  
