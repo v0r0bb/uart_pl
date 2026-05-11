@@ -48,3 +48,14 @@ class test_cfg_fifo extends test_cfg_base;
         uart_pkt_amount == 32;
     }
 endclass
+
+class test_cfg_ore extends test_cfg_base;
+    constraint delayc_c {
+        trans_delay_min == 0;
+        trans_delay_max == 0;
+    }
+
+    constraint uart_pkt_amount_c {
+        uart_pkt_amount == 20;
+    }
+endclass

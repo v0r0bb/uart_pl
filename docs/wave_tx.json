@@ -1,0 +1,18 @@
+{
+  "signal": [
+    { "name": "baud_clk (1/baudrate)", "wave": "p..........." },
+    { "name": "tx (1 stop bit)",       "wave": "10345|710345", 
+        "data": ["LSB", "", "", "MSB"] },
+    {"node": ".AB....CD"},
+    { "name": "tx (2 stop bit)",       "wave": "10345|71.034", 
+        "data": ["LSB", "", "", "MSB"] },
+    {"node": ".......E.F"}
+  ],
+  "edge": [
+    "A+B start",
+    "B+C data bits (8/9)",
+    "C+D stop" ,
+    "E+F 2 stop"
+  ],
+  "head": { "text": "UART Transmission" }
+}

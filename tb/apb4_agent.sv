@@ -57,7 +57,32 @@ endclass
 
 class apb4_gen_ore extends apb4_gen_base;
     virtual task run();
+        apb4_trans tr;
         setup();
+        repeat (18) begin 
+            tr = new();
+            tr.paddr = UART_TX_ADDR;
+            tr.pwrite = 1'b1;
+            tr.pdata = $urandom_range(0, 255);
+            apb4_gen2drv.put(tr); 
+            #1ms;
+        end
+
+        //#20ms; 
+        tr = new();
+        tr.paddr = UART_SR_ADDR;
+        tr.pwrite = 1'b0;
+        apb4_gen2drv.put(tr); 
+
+        tr = new();
+        tr.paddr = UART_RX_ADDR;
+        tr.pwrite = 1'b0;
+        apb4_gen2drv.put(tr);
+        tr = new();
+        tr.paddr = UART_SR_ADDR;
+        tr.pwrite = 1'b0;
+        apb4_gen2drv.put(tr);
+        
     endtask
 endclass
 

@@ -18,6 +18,7 @@ module tb;
     assign uart_if.txfnf    = ~DUT.i_uart_pl_top.i_fifo_tx.full;
     assign uart_if.rxflevel = DUT.i_uart_pl_top.i_fifo_rx.cnt;
     assign uart_if.txfspace = FIFO_CNT_WIDTH'(FIFO_DEPTH) - DUT.i_uart_pl_top.i_fifo_tx.cnt;
+    assign uart_if.ore      = DUT.i_uart_pl_top.i_uart_rx.ore;
 
     uart_pl_wrapper DUT (
         .clk_i(clk_i),
@@ -54,18 +55,26 @@ module tb;
     initial begin 
         test_base test;
         test_fifo test_f;
+        test_ore  test_or;
 
-        $display("BASE TEST");
+        $display("\n--- BASE TEST ---");
         reset();
         test = new(apb4_if, sync_if, uart_if);
         test.run();
         $display("Base test was finished");
 
-        $display("FIFO TEST");
+        $display("\n--- FIFO TEST ---");
+        $display("Time: %0t", $time());
         reset();
         test_f = new(apb4_if, sync_if, uart_if);
         test_f.run();
         $display("Fifo test was finished");
+
+        $display("\n--- OVERRUN ERROR TEST ---");
+        reset();
+        test_or = new(apb4_if, sync_if, uart_if);
+        test_or.run();
+        $display("Overrun error test was finished");
 
         $finish();
     end

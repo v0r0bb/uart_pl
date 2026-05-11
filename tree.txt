@@ -1,0 +1,20 @@
+rtl
+├── gen                     // автогенерация PeakRDL
+│   ├── apb4_intf.sv            // интерфейс для APB4 
+│   ├── uart_apb4_intf_pkg.sv   // структуры регистров
+│   └── uart_apb4_intf.sv       // парсинг команд от PS
+├── inc                     
+│   ├── uart_pl_intf.sv         // интерфейсы и структуры для модулей
+│   └── uart_pl_pkg.sv          // константы
+└── src
+    ├── fifo_generic.sv         // базовый FIFO
+    ├── fifo_rx.sv              // FIFO приемника
+    ├── fifo_tx.sv              // FIFO передатчика
+    ├── uart_baudgen.sv         // генератор стробов
+    ├── uart_pl_decode.sv       // парсинг регистров для модулей
+    ├── uart_pl_top.sv          // top-модуль
+    ├── uart_pl_wrapper.sv      // обертка для упаковки в IP-блок
+    ├── uart_rx.sv              // приемник
+    └── uart_tx.sv              // передатчик
+
+4 directories, 14 files

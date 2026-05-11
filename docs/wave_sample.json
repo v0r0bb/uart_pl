@@ -1,0 +1,16 @@
+{ "signal": [
+  { "name": "baud_clk",       "wave": "p", "period": 16},
+  { "name": "rx",             "wave": "3..............." },
+  {                           "node": "A...............B"},
+  { "name": "uart_clk (x8)",  "wave": "p.......", "period": 2},
+  { "name": "sample_cnt (x8)", "wave": "=.=.=.=.=.=.=.=.",
+      "data": ["0", "1", "2", "3", "4", "5", "6", "7", "8"]},
+  { "name": "uart_clk (x16)", "wave": "p...............", "period": 1},
+  { "name": "sample_cnt", "wave": "================",
+      "data": ["0", "1", "2", "3", "4", "5", "6", "7", 
+       "8", "9", "10", "11", "12", "13", "14", "15"]}
+  ],
+  "head": {"text": "UART Reciver Oversampling"},
+  "edge": ["A+B one data bit"]
+
+}

@@ -31,6 +31,7 @@ Don't override. Generated from: uart_apb4_intf
 |  1 |   TXFNF  |   r  | 0x1 | Transmit data FIFO not full |
 | 6:2| RXFLEVEL |   r  | 0x0 | Receive data FIFO fill level|
 |11:7| TXFSPACE |   r  | 0x10|Transmit data FIFO free space|
+| 12 |    ORE   |   r  | 0x0 |        Overrun error        |
 
 #### RXFNE field
 
@@ -53,6 +54,13 @@ UART_TX can be written</p>
 <p>0: tx_fifo is full;
 1-15: number of available slots for writing;
 16: tx_fifo is empty</p>
+
+#### ORE field
+
+<p>Set by hw when a new byte is received while the rx_fifo 
+is full and cannot accept it. This flag is 
+cleared automatically after the current data is 
+successfully read from the rx_fifo</p>
 
 ### UART_CR register
 

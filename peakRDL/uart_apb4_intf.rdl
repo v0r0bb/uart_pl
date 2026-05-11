@@ -75,7 +75,7 @@ addrmap uart_apb4_intf {
         field {
             name = "Data value";
             desc = "Contains the data character to be
-            transmitted when the register is written to";
+                    transmitted when the register is written to";
             sw = w;
             hw = r;
             //swmod = true; 

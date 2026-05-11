@@ -4,9 +4,9 @@ interface uart_intf;
     logic rdy;
     logic vld;
 
-    logic                              rxfne;   
-    logic                              txfnf;   
+    logic                        rxfne;   
+    logic                        txfnf;   
     logic [FIFO_CNT_WIDTH - 1:0] rxflevel; 
     logic [FIFO_CNT_WIDTH - 1:0] txfspace;
-    logic                              ore;
+    logic                        ore;
 endinterface

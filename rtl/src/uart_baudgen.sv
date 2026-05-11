@@ -9,10 +9,6 @@ module uart_baudgen
     output uart_strb_o
 );
 
-    logic [3:0]  div_frac;
-    logic [11:0] div_mant;
-    logic        over8;
-
     logic [12:0] current_mant;
     logic [12:0] cnt;
     logic [3:0]  acc;       
